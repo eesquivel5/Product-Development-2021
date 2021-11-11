@@ -11,9 +11,9 @@ services:
       - 3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: test123
-      DATABASE: test
+      MYSQL_DATABASE: test
       MYSQL_USER: test
-      PASSWORD: test123
+      MYSQL_PASSWORD: test123
         
   jupyter:
     image: jupyter/base-notebook
