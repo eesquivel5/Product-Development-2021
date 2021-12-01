@@ -1,12 +1,11 @@
-from io import IOBase
+import io
 from typing import Dict, Optional
-from typing import Dict
+
 from fastapi import FastAPI
 from enum import Enum
-from typing import Optional
+
 from pydantic import BaseModel
-from fastapi.responses import ORJSONResponse
-from fastapi.responses import UJSONResponse, HTMLResponse, StreamingResponse
+from fastapi.responses import ORJSONResponse, UJSONResponse, HTMLResponse, StreamingResponse
 import pandas as pd
 
 
@@ -139,3 +138,62 @@ def get_csv():
     response.headers['Content-Disposition'] = "attachment; filename=my_awesome_report.csv"
 
     return response
+
+
+@app.get("/suma/")
+def suma(Value1: float, Value2: float):
+    return Value1 + Value2
+
+@app.get("/resta/")
+def resta(Value1: float, Value2: float):
+    return Value1 - Value2
+
+@app.get("/multiplicacion/")
+def multiplicacion(Value1: float, Value2: float):
+    return Value1 * Value2
+
+@app.get("/division/")
+def division(Value1: float, Value2: float):
+    if Value2 == 0:
+        return "No se puede dividir entre cero"
+    return Value1 / Value2
+
+
+class  operaciones(BaseModel):
+    Value1: float
+    Value2: float
+
+@app.post("/suma/")
+async def suma(suma: operaciones):
+    sum_dict = suma.dict()
+    if suma.Value2:
+        Suma = suma.Value1 + suma.Value2
+        sum_dict.update({"Suma": Suma})
+    return sum_dict
+
+@app.post("/resta/")
+async def resta(resta: operaciones):
+    res_dict = resta.dict()
+    if resta.Value2:
+        Resta = resta.Value1 - resta.Value2
+        res_dict.update({"Resta": Resta})
+    return res_dict
+
+@app.post("/multiplicacion/")
+async def multiplicacion(multiplicacion: operaciones):
+    mult_dict = multiplicacion.dict()
+    if multiplicacion.Value2:
+        Multiplicacion = multiplicacion.Value1 * multiplicacion.Value2
+        mult_dict.update({"Multiplicación": Multiplicacion})
+    return mult_dict
+
+@app.post("/division/")
+async def division(division: operaciones):
+    div_dict = division.dict()
+    if division.Value2 == 0:
+        Division = "No se puede dividir entre cero"
+        div_dict.update({"División": Division})
+    if division.Value2:
+        Division = division.Value1 / division.Value2
+        div_dict.update({"División": Division})
+    return div_dict
